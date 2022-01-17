@@ -1,5 +1,5 @@
 print("Hello")
 x = 2
-Hallo = "bro"
+Hallo = "Gucci Cappi tief sie setzen para auf mein kopf"
 
 

@@ -7,6 +7,9 @@ from PIL import Image
 from os import listdir
 
 import random
+import torch.optim as optim
+from torch.autograd import Variable
+import torch.nn.functional as F
 
 
 normalize = transforms.Normalize(
@@ -44,7 +47,28 @@ for i in range(len(listdir("catdog/train/"))):
         train_data.append((torch.stack(train_data_list), target_list))
         train_data_list = []
         break
-print(train_data)
+
+
+optimizer = optim.Adam(model.parameters(), lr = 0.01)
+def train(epoch):
+    model.train()
+    batch_id = 0
+    for data, target in train_data:
+        data = data.cuda()
+        target = torch.Tensor(target).cuda()
+        data = Variable(data)
+        target = Variable(target)
+        optimizer.zero_grad()
+        out = model(data)
+        criterion = F.nll_loss
+        loss = criterion(out, target)
+        loss.backward()
+        optimizer.step()
 
 
 
+        batch_id = batch_id + 1
+
+
+for epoch in range(1, 30):
+    train(epoch)

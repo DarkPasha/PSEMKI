@@ -1,4 +1,5 @@
 from locale import normalize
+from turtle import forward
 import torch
 import torchvision
 
@@ -10,7 +11,7 @@ import random
 import torch.optim as optim
 from torch.autograd import Variable
 import torch.nn.functional as F
-
+import torch.nn as nn
 
 normalize = transforms.Normalize(
     mean = [0.485, 0.456, 0.406]
@@ -48,6 +49,34 @@ for i in range(len(listdir("catdog/train/"))):
         train_data_list = []
         break
 
+class Netz(nn.Module):
+    def __init__(self):
+        super(Netz, self).__init__()
+        self.conv1 = nn.Conv2d(3, 6 , kernel_size = 5)
+        self.conv2 = nn.Conv2d(6, 12 , kernel_size = 5)
+        self.conv3 = nn.Conv2d(12, 18 , kernel_size = 5)
+        self.fc1 = nn.Linear(14112, 1000)
+        self.fc2 = nn.Linear(1000, 2)
+    
+    def forward(self, x):
+        x = self.conv1(x)
+        x = F.max_pool2d(x,2)
+        x = F.relu(x)
+        x = self.conv2(x)
+        x = F.max_pool2d(x,2)
+        x = F.relu(x)
+        x = self.conv3(x)
+        X = F.max_pool2d(x,2)
+        x = F.relu(x)
+        x = x.view(-1, 14112)
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+        return F.softmax(x)
+
+model = Netz()
+model.cuda()
+
+
 
 optimizer = optim.Adam(model.parameters(), lr = 0.01)
 def train(epoch):
@@ -60,7 +89,7 @@ def train(epoch):
         target = Variable(target)
         optimizer.zero_grad()
         out = model(data)
-        criterion = F.nll_loss
+        criterion = F.binary_cross_entropy
         loss = criterion(out, target)
         loss.backward()
         optimizer.step()

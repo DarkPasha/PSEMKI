@@ -55,7 +55,8 @@ class Netz(nn.Module):
         self.conv1 = nn.Conv2d(3, 6 , kernel_size = 5)
         self.conv2 = nn.Conv2d(6, 12 , kernel_size = 5)
         self.conv3 = nn.Conv2d(12, 18 , kernel_size = 5)
-        self.fc1 = nn.Linear(14112, 1000)
+        self.conv4 = nn.Conv2d(18, 24, kernel_size = 5)
+        self.fc1 = nn.Linear(3456, 1000)
         self.fc2 = nn.Linear(1000, 2)
     
     def forward(self, x):
@@ -71,7 +72,7 @@ class Netz(nn.Module):
         x = x.view(-1, 14112)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
-        return F.softmax(x)
+        return F.sigmoid(x)
 
 model = Netz()
 model.cuda()
@@ -99,5 +100,19 @@ def train(epoch):
         batch_id = batch_id + 1
 
 
+def test():
+    model.eval()
+    files = listdir('catdog/test/')
+    f = random.choice(files)
+    img = Image.open('catdog/test/' + f)
+    img_eval_tensor = transforms(img)
+    img_eval_tensor.unsqueeze(0)
+    data = Variable(img_eval_tensor.cuda())
+    out = model(data)
+    print(out.data.max(1, keepdim = True)[1])
+    x = input("")
+
+
 for epoch in range(1, 30):
     train(epoch)
+    test()

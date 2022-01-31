@@ -1,3 +1,5 @@
+#Package Import
+
 from locale import normalize
 from turtle import forward
 import torch
@@ -12,6 +14,8 @@ import torch.optim as optim
 from torch.autograd import Variable
 import torch.nn.functional as F
 import torch.nn as nn
+
+#Anpassen der Bilder auf feste Größe
 
 normalize = transforms.Normalize(
     mean = [0.485, 0.456, 0.406]
@@ -31,6 +35,8 @@ train_data=[]
 
 files = listdir("catdog/train/")
 
+#Zufallsreinfolge für die Bilder, damit die KI keine Muster darin erkennt 
+#Außerdem Bearbeitungder Bilder, damit die KI ein neuronales Netz entwickeln kann
 
 for i in range(len(listdir("catdog/train/"))):
     f = random.choice(files)
@@ -43,11 +49,14 @@ for i in range(len(listdir("catdog/train/"))):
     target = [isCat, isDog]
     target_list.append(target)
 
+#Trainingsepochen:
 
     if len(train_data_list) >= 64:
         train_data.append((torch.stack(train_data_list), target_list))
         train_data_list = []
         break
+
+#Erstellen eines neuronalen Netzes
 
 class Netz(nn.Module):
     def __init__(self):
@@ -77,7 +86,7 @@ class Netz(nn.Module):
 model = Netz()
 model.cuda()
 
-
+#Optimierung des Netzes der KI
 
 optimizer = optim.Adam(model.parameters(), lr = 0.01)
 def train(epoch):
@@ -99,6 +108,7 @@ def train(epoch):
 
         batch_id = batch_id + 1
 
+#Testklasse der KI / Ausführung der KI
 
 def test():
     model.eval()
@@ -112,6 +122,7 @@ def test():
     print(out.data.max(1, keepdim = True)[1])
     x = input("")
 
+#Ausführung der KI mit 30 Trainingsepochen
 
 for epoch in range(1, 30):
     train(epoch)

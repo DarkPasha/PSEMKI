@@ -45,6 +45,8 @@ for i in range(len(listdir('catdog/train/'))):
         if len(train_data) > 150:
             break
 
+# Neuronales Netz
+
 class Netz(nn.Module):
     def __init__(self):
         super(Netz, self).__init__()

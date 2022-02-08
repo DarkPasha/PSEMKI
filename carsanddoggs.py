@@ -29,7 +29,7 @@ transform = transforms.Compose([
 
 
 train_data_list=[]
-traget_list = []
+target_list = []
 train_data=[]
 
 
@@ -43,18 +43,21 @@ for i in range(len(listdir("catdog/train/"))):
     files.remove(f)
     img = Image.open("catdog/train/" + f)
     img_tensor = transform(img)
-    train_data_lost.append(img_tensor)
+    train_data_list.append(img_tensor)
     isCat = 1 if "cat" in f else 0
     isDog = 1 if "dog" in f else 0
     target = [isCat, isDog]
     target_list.append(target)
-
+    
 #Trainingsepochen:
 
     if len(train_data_list) >= 64:
         train_data.append((torch.stack(train_data_list), target_list))
         train_data_list = []
         break
+
+print(train_data_list)
+print(target_list)
 
 #Erstellen eines neuronalen Netzes
 
@@ -76,7 +79,7 @@ class Netz(nn.Module):
         x = F.max_pool2d(x,2)
         x = F.relu(x)
         x = self.conv3(x)
-        X = F.max_pool2d(x,2)
+        x = F.max_pool2d(x,2)
         x = F.relu(x)
         x = x.view(-1, 14112)
         x = F.relu(self.fc1(x))

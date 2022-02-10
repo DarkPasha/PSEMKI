@@ -12,6 +12,12 @@ import os
 from PIL import ImageFont
 from PIL import ImageDraw
 
+
+# import der libraries
+
+
+
+
 normalize = transforms.Normalize(
    mean=[0.485, 0.456, 0.406],
    std=[0.229, 0.224, 0.225]
@@ -20,6 +26,13 @@ transforms = transforms.Compose([transforms.Resize(256),
                                  transforms.CenterCrop(256),
                                  transforms.ToTensor(),
                                  normalize])
+
+
+# transformation der bilder => gleiche Ausgangslage
+
+
+
+
 #TARGET: [isCat, isDog]
 train_data_list = []
 target_list = []
@@ -27,6 +40,9 @@ train_data = []
 waited = False
 files = listdir('catdog/train/')
 for i in range(len(listdir('catdog/train/'))):
+
+    # zugreifen in den ordner mit den Bildern --> random pick (f)
+
     if len(train_data) == 58 and not waited:
         waited = True
         continue
@@ -115,6 +131,8 @@ def train(epoch):
                    100. * batch_id / len(train_data), loss.data[0]))
         batch_id = batch_id + 1
 
+
+# wir nehmen ein random bild --> bringen es in das richte Format --> laden es auf die Grafikkarte --> lassen die KI arbeiten --> zeigt das Bild und ob es ein Hund oder eine Katze ist
 def test():
     model.eval()
     files = listdir('catdog/test/')

@@ -18,7 +18,7 @@ import torch.nn as nn
 #Anpassen der Bilder auf feste Größe
 
 normalize = transforms.Normalize(
-    mean = [0.485, 0.456, 0.406]
+    mean = [0.485, 0.456, 0.406],
     std=[0.229, 0.224, 0.225]
     )
 transform = transforms.Compose([ 

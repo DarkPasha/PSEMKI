@@ -33,15 +33,15 @@ target_list = []
 train_data=[]
 
 
-files = listdir("")
+files = listdir("PetImages/")
 
 #Zufallsreinfolge für die Bilder, damit die KI keine Muster darin erkennt 
 #Außerdem Bearbeitungder Bilder, damit die KI ein neuronales Netz entwickeln kann
 
-for i in range(len(listdir("C:\Users\Dani\Desktop\archive\PetImages"))):
+for i in range(len(listdir())):
     f = random.choice(files)
     files.remove(f)
-    img = Image.open("C:\Users\Dani\Desktop\archive\PetImages" + f)
+    img = Image.open("PetImages/" + f)
     img_tensor = transform(img)
     train_data_list.append(img_tensor)
     isCat = 1 if "cat" in f else 0
@@ -115,9 +115,9 @@ def train(epoch):
 
 def test():
     model.eval()
-    files = listdir('C:\Users\Dani\Desktop\archive\PetImages')
+    files = listdir('PetImages/')
     f = random.choice(files)
-    img = Image.open('C:\Users\Dani\Desktop\archive\PetImages' + f)
+    img = Image.open('PetImages/' + f)
     img_eval_tensor = transforms(img)
     img_eval_tensor.unsqueeze(0)
     data = Variable(img_eval_tensor.cuda())

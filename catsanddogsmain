@@ -141,7 +141,7 @@ def error_criterion(out,target):
     train_error = torch.abs(out_max_indices - target_max_indices).sum().data 
     return train_error
 
-optimizer = optim.Adam(model.parameters(), lr = 0.001)
+optimizer = optim.Adam(model.parameters(), lr = 0.0005)
 def train(epoch, train_data):
     model.train()
     batch_id = 0
@@ -180,7 +180,7 @@ def testModelWithTestData():
         criterion = F.binary_cross_entropy
         loss = criterion(out, target)
         running_train_error = error_criterion(out,target)/data.shape[0]
-        print("loss", loss)
+        #print("loss", loss)
     return running_train_error
 
 #Testklasse der KI / Ausführung der KI
@@ -200,6 +200,7 @@ def test():
     out = model(data)
     print("ergebnis", out)
     print(out.data.max(1, keepdim = True)[1]) 
+    print("Hund") if((out.data.max(1, keepdim = True)[1])==1) else print("Katze")
     img.show()
     #x = input("")
 
@@ -215,7 +216,9 @@ for epoch in range(1, 10):
         total_train_error += train(epoch, train_data)
        # print(len(files))
     test_error = testModelWithTestData()
+    print("test_error")
     print(test_error)
+    print("totatl_train_error")
     print(total_train_error/5000)
 
 testModelWithTestData()

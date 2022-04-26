@@ -51,7 +51,7 @@ def readBatchsize(batch_size, files):
         f = random.choice(files)
         files.remove(f)
         #print(f)
-       # print(i)
+        #print(i)
         img = Image.open("PetImages/training_data/" + f) 
         img_tensor = transforms(img)
         train_data_list.append(img_tensor)
@@ -81,7 +81,7 @@ for i in range(50):
     isDog = 1 if "dog" in f else 0
     target = [isCat, isDog]
     test_target_list.append(target)
-
+    #print(f)
 #Trainingsepochen:
 test_data.append((torch.stack(test_data_list), test_target_list))
 test_data_list = []
@@ -214,12 +214,13 @@ for epoch in range(1, 10):
     for batchNumber in range(1, 200):
         train_data = readBatchsize(50, files)
         total_train_error += train(epoch, train_data)
+        #print(f)
        # print(len(files))
     test_error = testModelWithTestData()
     print("test_error")
     print(test_error)
     print("totatl_train_error")
-    print(total_train_error/5000)
+    print(total_train_error/10000)
 
 testModelWithTestData()
 

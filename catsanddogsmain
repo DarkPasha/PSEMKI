@@ -183,6 +183,26 @@ def testModelWithTestData():
         #print("loss", loss)
     return running_train_error
 
+
+for epoch in range(1, 10):
+    print("epoch", epoch)
+    files = os.listdir("PetImages/training_data/")
+    total_train_error= 0.0
+    for batchNumber in range(1, 200):
+        train_data = readBatchsize(50, files)
+        total_train_error += train(epoch, train_data)
+        #print(f)
+       # print(len(files))
+    test_error = testModelWithTestData()
+    print("test_error")
+    print(test_error)
+    print("totatl_train_error")
+    print(total_train_error/10000)
+print("Saving Model")
+torch.save(model, 'model.pt' )
+
+testModelWithTestData()
+
 #Testklasse der KI / Ausführung der KI
 
 def test():
@@ -207,22 +227,7 @@ def test():
 
 #Ausführung der KI mit 30 Trainingsepochen
 
-for epoch in range(1, 10):
-    print("epoch", epoch)
-    files = os.listdir("PetImages/training_data/")
-    total_train_error= 0.0
-    for batchNumber in range(1, 200):
-        train_data = readBatchsize(50, files)
-        total_train_error += train(epoch, train_data)
-        #print(f)
-       # print(len(files))
-    test_error = testModelWithTestData()
-    print("test_error")
-    print(test_error)
-    print("totatl_train_error")
-    print(total_train_error/10000)
 
-testModelWithTestData()
 
 while True:
     test()

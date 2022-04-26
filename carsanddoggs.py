@@ -106,9 +106,6 @@ def train(epoch):
         loss = criterion(out, target)
         loss.backward()
         optimizer.step()
-
-
-
         batch_id = batch_id + 1
 
 #Testklasse der KI / Ausführung der KI

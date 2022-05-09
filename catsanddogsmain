@@ -207,6 +207,7 @@ testModelWithTestData()
 
 def test():
     model.eval()
+    torch.save(model.state_dict(), 'meinNetz.pt')
     files = os.listdir('PetImages/tests/')
     print("enter filename")
     f = input("")

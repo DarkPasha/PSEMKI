@@ -7,7 +7,7 @@ import torchvision
 
 from torchvision import transforms
 from PIL import Image
-from os import listdir
+import os
 
 import random
 import torch.optim as optim
@@ -15,50 +15,85 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 import torch.nn as nn
 
+import matplotlib.pyplot as plt
+
 #Anpassen der Bilder auf feste Größe
 
 normalize = transforms.Normalize(
     mean = [0.485, 0.456, 0.406],
     std=[0.229, 0.224, 0.225]
     )
-transform = transforms.Compose([ 
+transforms = transforms.Compose([ 
         transforms.Resize(256),
         transforms.CenterCrop(256),
         transforms.ToTensor(),
         normalize])
 
 
-train_data_list=[]
-target_list = []
-train_data=[]
+#train_data_list=[]
+#target_list = []
+#train_data=[]
+
+test_data_list=[]
+test_target_list = []
+test_data=[]
 
 
-files = listdir("")
 
 #Zufallsreinfolge für die Bilder, damit die KI keine Muster darin erkennt 
 #Außerdem Bearbeitungder Bilder, damit die KI ein neuronales Netz entwickeln kann
+#print(files)
+ 
+def readBatchsize(batch_size, files):
+    train_data_list=[]
+    target_list = []
+    train_data= []
+    
+    for i in range(batch_size):
+        f = random.choice(files)
+        files.remove(f)
+        #print(f)
+        #print(i)
+        img = Image.open("PetImages/training_data/" + f) 
+        img_tensor = transforms(img)
+        train_data_list.append(img_tensor)
+        isCat = 1 if "cat" in f else 0
+        isDog = 1 if "dog" in f else 0
+        target = [isCat, isDog]
+        target_list.append(target)
 
-for i in range(len(listdir("C:\Users\Dani\Desktop\archive\PetImages"))):
-    f = random.choice(files)
-    files.remove(f)
-    img = Image.open("C:\Users\Dani\Desktop\archive\PetImages" + f)
-    img_tensor = transform(img)
-    train_data_list.append(img_tensor)
+    train_data.append((torch.stack(train_data_list), target_list))
+    return train_data
+
+# if len(train_data_list) >= 7:
+#    train_data.append((torch.stack(train_data_list), target_list))
+#    train_data_list = []
+    
+
+# load test data
+testFiles = os.listdir("PetImages/test_data/")
+#print("testFiles", files)
+for i in range(50):
+    f = random.choice(testFiles)
+    testFiles.remove(f)
+    img = Image.open("PetImages/test_data/" + f) 
+    img_tensor = transforms(img)
+    test_data_list.append(img_tensor)
     isCat = 1 if "cat" in f else 0
     isDog = 1 if "dog" in f else 0
     target = [isCat, isDog]
-    target_list.append(target)
-    
+    test_target_list.append(target)
+    #print(f)
 #Trainingsepochen:
+test_data.append((torch.stack(test_data_list), test_target_list))
+test_data_list = []
+    
 
-    if len(train_data_list) >= 64:
-        train_data.append((torch.stack(train_data_list), target_list))
-        train_data_list = []
-        break
 
-print(train_data_list)
-print(target_list)
 
+#print(train_data_list)
+#print(target_list)
+#print(train_data)
 #Erstellen eines neuronalen Netzes
 
 class Netz(nn.Module):
@@ -68,34 +103,53 @@ class Netz(nn.Module):
         self.conv2 = nn.Conv2d(6, 12 , kernel_size = 5)
         self.conv3 = nn.Conv2d(12, 18 , kernel_size = 5)
         self.conv4 = nn.Conv2d(18, 24, kernel_size = 5)
-        self.fc1 = nn.Linear(3456, 1000)
+        self.conv5 = nn.Conv2d(24, 56, kernel_size = 2)
+        self.fc1 = nn.Linear(1400, 1000)
         self.fc2 = nn.Linear(1000, 2)
     
     def forward(self, x):
         x = self.conv1(x)
         x = F.max_pool2d(x,2)
         x = F.relu(x)
-        x = self.conv2(x)
+        x = self.conv2(x)  
         x = F.max_pool2d(x,2)
         x = F.relu(x)
         x = self.conv3(x)
         x = F.max_pool2d(x,2)
         x = F.relu(x)
-        x = x.view(-1, 14112)
+        x = self.conv4(x)
+        x = F.max_pool2d(x,2)
+        x = F.relu(x)
+        x = self.conv5(x)
+        x = F.max_pool2d(x,2)
+        x = F.relu(x)
+        x = x.view(-1, 1400)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
-        return F.sigmoid(x)
+        return torch.sigmoid(x)
 
 model = Netz()
 model.cuda()
 
 #Optimierung des Netzes der KI
 
-optimizer = optim.Adam(model.parameters(), lr = 0.01)
-def train(epoch):
+def error_criterion(out,target):
+    #print(out)
+    out_max_vals, out_max_indices = torch.max(out,1)
+    target_max_vals, target_max_indices = torch.max(target,1)
+    #print(out_max_indices)
+    #print(target_max_indices)
+   # train_error = (out_max_indices != target).sum().data[0]/target_max_indices.size()[0]
+    train_error = torch.abs(out_max_indices - target_max_indices).sum().data 
+    return train_error
+
+optimizer = optim.Adam(model.parameters(), lr = 0.0005)
+def train(epoch, train_data):
     model.train()
     batch_id = 0
+    running_train_error= 0.0
     for data, target in train_data:
+        #print("training")
         data = data.cuda()
         target = torch.Tensor(target).cuda()
         data = Variable(data)
@@ -104,26 +158,94 @@ def train(epoch):
         out = model(data)
         criterion = F.binary_cross_entropy
         loss = criterion(out, target)
+        #print("loss", loss)
         loss.backward()
         optimizer.step()
+       # print(out)
+        #print(target)
+        running_train_error = error_criterion(out,target)
+        #print("running_train_error", running_train_error)
         batch_id = batch_id + 1
+    return running_train_error
 
-#Testklasse der KI / Ausführung der KI
+def testModelWithTestData():
+    print("testing with testData")
+    #print(test_data)
+    running_train_error= 0.0
+    for data, target in test_data:
+        data = data.cuda()
+        target = torch.Tensor(target).cuda()
+        data = Variable(data)
+        target = Variable(target)
+        out = model(data)
+        #print("ergebnis", out.data.max(1, keepdim = True)[1]) 
+        criterion = F.binary_cross_entropy
+        loss = criterion(out, target)
+        running_train_error = error_criterion(out,target)/data.shape[0]
+        #print("loss", loss)
+    return running_train_error
 
-def test():
-    model.eval()
-    files = listdir('C:\Users\Dani\Desktop\archive\PetImages')
-    f = random.choice(files)
-    img = Image.open('C:\Users\Dani\Desktop\archive\PetImages' + f)
-    img_eval_tensor = transforms(img)
-    img_eval_tensor.unsqueeze(0)
-    data = Variable(img_eval_tensor.cuda())
-    out = model(data)
-    print(out.data.max(1, keepdim = True)[1])
-    x = input("")
+
+
 
 #Ausführung der KI mit 30 Trainingsepochen
 
-for epoch in range(1, 30):
-    train(epoch)
+for epoch in range(1, 10):
+    print("epoch", epoch)
+    i = 0
+    files = os.listdir("PetImages/training_data/")
+    total_train_error= 0.0
+    for batchNumber in range(1, 200):
+        train_data = readBatchsize(50, files)
+        total_train_error += train(epoch, train_data)
+        #print(f)
+        #print(len(files))
+    torch.save(model, 'meinNetz.pt')
+    test_error = testModelWithTestData()
+    print("test_error")
+    print(test_error)
+    print("totatl_train_error")
+    print(total_train_error/10000)
+
+testModelWithTestData()
+
+#plot Graph
+
+x = [1,2,3,4,5,6,7,8,9,10]
+y = []
+  
+plt.plot(x, y)
+  
+plt.xlabel('x - axis')
+
+plt.ylabel('y - axis')
+
+plt.title('Fehlerquote KI')
+  
+plt.show()
+
+
+#Testklasse der KI / Ausführung der KI
+
+
+def test():
+    model.eval()
+    files = os.listdir('PetImages/tests/')
+    print("enter filename")
+    f = input("")
+    #f = random.choice(files)
+    img = Image.open('PetImages/tests/' + f).convert('RGB')
+    img_eval_tensor = transforms(img)
+    img_eval_tensor.unsqueeze(0)
+    img_eval_tensor = img_eval_tensor.cuda()
+    #print(img_eval_tensor.shape)
+    data = Variable(img_eval_tensor)
+    out = model(data)
+    print("ergebnis", out)
+    print(out.data.max(1, keepdim = True)[1]) 
+    print("Hund") if((out.data.max(1, keepdim = True)[1])==1) else print("Katze")
+    img.show()
+    #x = input("")
+
+while True:
     test()

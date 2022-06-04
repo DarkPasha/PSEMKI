@@ -1,4 +1,6 @@
 #Package Import
+#Authors: Emirhan, Daniel
+#Final version
 
 from locale import normalize
 from turtle import forward

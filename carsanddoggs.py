@@ -73,7 +73,7 @@ def readBatchsize(batch_size, files):
 # load test data
 testFiles = os.listdir("PetImages/test_data/")
 #print("testFiles", files)
-for i in range(50):
+for i in range(100):
     f = random.choice(testFiles)
     testFiles.remove(f)
     img = Image.open("PetImages/test_data/" + f) 
@@ -168,6 +168,9 @@ def train(epoch, train_data):
         batch_id = batch_id + 1
     return running_train_error
 
+
+
+
 def testModelWithTestData():
     print("testing with testData")
     #print(test_data)
@@ -186,6 +189,8 @@ def testModelWithTestData():
     return running_train_error
 
 
+arr = []
+arr2 = []
 
 
 #Ausführung der KI mit 30 Trainingsepochen
@@ -200,33 +205,36 @@ for epoch in range(1, 10):
         total_train_error += train(epoch, train_data)
         #print(f)
         #print(len(files))
-    torch.save(model, 'meinNetz.pt')
+    torch.save(model, 'meinNetz2.pt')
     test_error = testModelWithTestData()
     print("test_error")
     print(test_error)
     print("totatl_train_error")
     print(total_train_error/10000)
+    arr.append((total_train_error/10000).item())
+    arr2.append(test_error.item())
+    #print(arr)
 
-testModelWithTestData()
 
 #plot Graph
 
-x = [1,2,3,4,5,6,7,8,9,10]
-y = []
-  
-plt.plot(x, y)
-  
-plt.xlabel('x - axis')
+x1 = range(1,len(arr)+1)
+y1 = arr
 
-plt.ylabel('y - axis')
+x2 =  range(1,len(arr2)+1)
+y2 = arr2
 
-plt.title('Fehlerquote KI')
-  
+plt.ylim(0,0.5)
+plt.plot(x1, y1, label = "training_error") 
+plt.plot(x2, y2, label = "test_error")
+plt.xlabel('Epoch')
+plt.ylabel('Error Rate')
+plt.title('Error Rate AI - lr 0.0005 - 10 epochs')
+plt.legend()
+plt.savefig('Error_Rate_AI_3.png')
 plt.show()
 
-
 #Testklasse der KI / Ausführung der KI
-
 
 def test():
     model.eval()

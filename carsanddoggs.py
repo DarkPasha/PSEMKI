@@ -20,7 +20,8 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 
 #Anpassen der Bilder auf feste Größe
-
+#Tensoren sind mehrdimensionale Arrays, welche Elemente eines einzigen Datentyps enthalten
+#man kann mit Tensoren daten speichern und manipulieren --> Bilder auf die passende Größe bringen
 normalize = transforms.Normalize(
     mean = [0.485, 0.456, 0.406],
     std=[0.229, 0.224, 0.225]
@@ -46,19 +47,28 @@ test_data=[]
 #Außerdem Bearbeitungder Bilder, damit die KI ein neuronales Netz entwickeln kann
 #print(files)
  
+
+#batchsizes: hier wird aus der Gesamtmenge von den Bildern, die wir verwenden, eine besimmte Menge genommen --> ein Batch, damit wird trainiert, und dann die nächste Batch, usw.
+# --> requires less memory + networks train faster with mini batches instead of whole data (Nachteil: je kleiner Batches, desto ungenauer das Resultat)
+
 def readBatchsize(batch_size, files):
     train_data_list=[]
     target_list = []
     train_data= []
     
     for i in range(batch_size):
+        # hier wird ein random Bild gewählt und dieses Bild wird aus der Queue gelöscht, damit es nicht mehrmals vorkommt
         f = random.choice(files)
         files.remove(f)
         #print(f)
         #print(i)
         img = Image.open("PetImages/training_data/" + f) 
         img_tensor = transforms(img)
+        #das random Bild wird hier auf die Werte skaliert und bearbeitet, die wir oben festgelegt haben (Tensormanipulation)
+
         train_data_list.append(img_tensor)
+
+        
         isCat = 1 if "cat" in f else 0
         isDog = 1 if "dog" in f else 0
         target = [isCat, isDog]
@@ -71,6 +81,12 @@ def readBatchsize(batch_size, files):
 #    train_data.append((torch.stack(train_data_list), target_list))
 #    train_data_list = []
     
+
+
+
+
+# hier wird ein Training durchgeführt, wobei ein Bild durch die random library gewählt wird und wie oben aus der queue gelöscht wird
+# dieses bild wird geöffnet und transformiert (genau wie oben)
 
 # load test data
 testFiles = os.listdir("PetImages/test_data/")
@@ -172,6 +188,7 @@ def train(epoch, train_data):
 
 
 
+#die Fehlerquote wird abgefangen und ausgegeben
 
 def testModelWithTestData():
     print("testing with testData")
@@ -219,7 +236,7 @@ for epoch in range(1, 10):
 
 
 #plot Graph
-
+#die Fehlerquote, die abgefangen wurde wird hier als ein Graph ausgegeben, wodurch man die Effizienz optisch erkennen kann
 x1 = range(1,len(arr)+1)
 y1 = arr
 

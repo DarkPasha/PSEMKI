@@ -1,4 +1,6 @@
 #Package Import
+#Authors: Emirhan, Daniel
+#Final version
 
 from locale import normalize
 from turtle import forward
@@ -18,7 +20,8 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 
 #Anpassen der Bilder auf feste Größe
-
+#Tensoren sind mehrdimensionale Arrays, welche Elemente eines einzigen Datentyps enthalten
+#man kann mit Tensoren daten speichern und manipulieren --> Bilder auf die passende Größe bringen
 normalize = transforms.Normalize(
     mean = [0.485, 0.456, 0.406],
     std=[0.229, 0.224, 0.225]
@@ -44,19 +47,28 @@ test_data=[]
 #Außerdem Bearbeitungder Bilder, damit die KI ein neuronales Netz entwickeln kann
 #print(files)
  
+
+#batchsizes: hier wird aus der Gesamtmenge von den Bildern, die wir verwenden, eine besimmte Menge genommen --> ein Batch, damit wird trainiert, und dann die nächste Batch, usw.
+# --> requires less memory + networks train faster with mini batches instead of whole data (Nachteil: je kleiner Batches, desto ungenauer das Resultat)
+
 def readBatchsize(batch_size, files):
     train_data_list=[]
     target_list = []
     train_data= []
     
     for i in range(batch_size):
+        # hier wird ein random Bild gewählt und dieses Bild wird aus der Queue gelöscht, damit es nicht mehrmals vorkommt
         f = random.choice(files)
         files.remove(f)
         #print(f)
         #print(i)
         img = Image.open("PetImages/training_data/" + f) 
         img_tensor = transforms(img)
+        #das random Bild wird hier auf die Werte skaliert und bearbeitet, die wir oben festgelegt haben (Tensormanipulation)
+
         train_data_list.append(img_tensor)
+
+        
         isCat = 1 if "cat" in f else 0
         isDog = 1 if "dog" in f else 0
         target = [isCat, isDog]
@@ -70,10 +82,16 @@ def readBatchsize(batch_size, files):
 #    train_data_list = []
     
 
+
+
+
+# hier wird ein Training durchgeführt, wobei ein Bild durch die random library gewählt wird und wie oben aus der queue gelöscht wird
+# dieses bild wird geöffnet und transformiert (genau wie oben)
+
 # load test data
 testFiles = os.listdir("PetImages/test_data/")
 #print("testFiles", files)
-for i in range(50):
+for i in range(100):
     f = random.choice(testFiles)
     testFiles.remove(f)
     img = Image.open("PetImages/test_data/" + f) 
@@ -168,6 +186,10 @@ def train(epoch, train_data):
         batch_id = batch_id + 1
     return running_train_error
 
+
+
+#die Fehlerquote wird abgefangen und ausgegeben
+
 def testModelWithTestData():
     print("testing with testData")
     #print(test_data)
@@ -186,6 +208,8 @@ def testModelWithTestData():
     return running_train_error
 
 
+arr = []
+arr2 = []
 
 
 #Ausführung der KI mit 30 Trainingsepochen
@@ -200,33 +224,36 @@ for epoch in range(1, 10):
         total_train_error += train(epoch, train_data)
         #print(f)
         #print(len(files))
-    torch.save(model, 'meinNetz.pt')
+    torch.save(model, 'meinNetz2.pt')
     test_error = testModelWithTestData()
     print("test_error")
     print(test_error)
     print("totatl_train_error")
     print(total_train_error/10000)
+    arr.append((total_train_error/10000).item())
+    arr2.append(test_error.item())
+    #print(arr)
 
-testModelWithTestData()
 
 #plot Graph
+#die Fehlerquote, die abgefangen wurde wird hier als ein Graph ausgegeben, wodurch man die Effizienz optisch erkennen kann
+x1 = range(1,len(arr)+1)
+y1 = arr
 
-x = [1,2,3,4,5,6,7,8,9,10]
-y = []
-  
-plt.plot(x, y)
-  
-plt.xlabel('x - axis')
+x2 =  range(1,len(arr2)+1)
+y2 = arr2
 
-plt.ylabel('y - axis')
-
-plt.title('Fehlerquote KI')
-  
+plt.ylim(0,0.5)
+plt.plot(x1, y1, label = "training_error") 
+plt.plot(x2, y2, label = "test_error")
+plt.xlabel('Epoch')
+plt.ylabel('Error Rate')
+plt.title('Error Rate AI - lr 0.0005 - 10 epochs')
+plt.legend()
+plt.savefig('Error_Rate_AI_3.png')
 plt.show()
 
-
 #Testklasse der KI / Ausführung der KI
-
 
 def test():
     model.eval()

@@ -1,0 +1,161 @@
+
+*{
+    margin: 0;
+    padding: 0;
+}
+.navbar {
+    width: 100%;
+    height: 15vh;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    margin-left: 5%;
+}
+.Info {
+    width: 8;
+    height: 10vh;
+    cursor: pointer;
+
+}
+nav{
+    flex: 1;
+    padding-left: 60px;
+}
+nav ul li{
+    display: inline-block;
+    list-style: none;
+    margin: 0px 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+nav ul li a{
+    text-decoration: none;
+    color: white;
+}
+
+.cont h1{
+    font-size: 60px;
+    font-weight: 100;
+    margin-top:24px;
+    margin-bottom: 15px;
+    color:#fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.cont h2{
+    font-size: 20px;
+    color:			#00ffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.cont{
+    margin-left: 30%;
+    margin-top: 10%;
+}
+.cont .btn{
+    display: inline-block;
+    background: linear-gradient(45deg, rgb(187, 34, 34),#00ffff);
+    border-radius: 6px;
+    padding:10px 20px;
+    box-sizing: border-box;
+    text-decoration:none;
+    color:white;
+    box-shadow: 3px 8px 22px rgba(94,28,68,0.15);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+    
+ 
+.image-upload{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-direction: column;
+    height: 80vh;
+}
+#display-image{
+    width: 720px;
+    height: 720px;
+    border: 1px solid white;
+    background-position: center;
+    background-size: cover;
+ }
+ .Information{
+    margin-left: 10%;
+    margin-top: 7%;
+ }
+ .Information h1{
+    font-size: 35px;
+    font-weight: 100;
+    margin-top:24px;
+    margin-bottom: 15px;
+    color:#fff;
+    font-family: Arial, Helvetica, sans-serif;
+ }
+ .Information h2{
+    font-size: 20px;
+    color:	white;
+    font-family: Arial, Helvetica, sans-serif;
+ }
+/*.container{
+    height: 100vh;
+    width: 100%;
+    background-image: url();
+    background-position: center;
+    background-size: cover;
+    padding-left: 5%;
+    padding-right: 5%;
+    box-sizing: border-box;
+    position: relative;
+                                                Fallls man noch ein anderen Hintergrund haben will
+}
+*/
+
+.content {
+	background: rgba(0, 0, 0, 0.938);
+	height: 100vh;
+	overflow: hidden;
+}
+
+.box ul li {
+	position: absolute;
+	width: 35px;
+	height: 35px;
+	list-style: none;
+	opacity: 0;
+	background: radial-gradient(deepskyblue, transparent, transparent);
+	bottom: 0;
+	left: 10vw;
+	animation: animate 15s linear infinite;
+}
+.box ul li:nth-child(2) {
+	left: 36vw;
+	animation-delay: 2s;
+}
+.box ul li:nth-child(3) {
+	left: 22vw;
+	animation-delay: 4s;
+}
+.box ul li:nth-child(4) {
+	left: 56vw;
+	animation-delay: 6s;
+}
+.box ul li:nth-child(5) {
+	left: 76vw;
+	animation-delay: 4s;
+}
+.box ul li:nth-child(6) {
+	left: 80vw;
+	animation-delay: 8s;
+}
+@keyframes animate {
+	0% {
+		transform: scale(0);
+		opacity: 1;
+		bottom: 0;
+	}
+	100% {
+		transform: scale(10);
+		opacity: 0;
+		bottom: 100vh;
+	}
+}
+

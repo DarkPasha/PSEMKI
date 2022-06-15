@@ -17,9 +17,10 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 import tkinter as tk
 import random
-
-
-
+from pathlib import Path
+import os.path
+import os
+import time
 
 #Anpassen der Bilder auf feste Größe
 
@@ -228,9 +229,12 @@ arr2 = []
 
 
 #Ausführung der KI mit 30 Trainingsepochen
-
-for epoch in range(1, 3):
-    print("epoch", epoch)
+print("")
+print("")
+print("////////////////////////////////////////////////////////////////////////////////////////////")
+for epoch in range(1, 2):
+    print("Now training with Epoch", epoch,"!")
+    print("")
     i = 0
     files = os.listdir("PetImages/training_data/")
     total_train_error= 0.0
@@ -241,14 +245,22 @@ for epoch in range(1, 3):
         #print(len(files))
     torch.save(model, 'meinNetz2.pt')
     test_error = testModelWithTestData()
-    print("test_error")
+    #print("test_error")
     print(test_error)
-    print("totatl_train_error")
+    #print("totatl_train_error")
     print(total_train_error/10000)
     arr.append((total_train_error/10000).item())
     arr2.append(test_error.item())
-    print(arr)
-
+    print("Total Errorquote ---->", arr)
+    
+    print("")
+    print("Finished training with Epoch", epoch, "!")
+    print("////////////////////////////////////////////////////////////////////////////////////////////")
+    
+    #Absätze
+    print("")
+    print("")
+    time.sleep(3)
 
      ### hier kommt die gui rein
     
@@ -258,8 +270,6 @@ root = tk.Tk()
 
 header_label = tk.Label(root, text = "FEHLERQUOTE:")
 header_label.grid(row = 1, column = 1)
-
-
 
 
 newrow = 5
@@ -303,22 +313,34 @@ plt.show()
 def test():
     model.eval()
     files = os.listdir('PetImages/tests/')
-    print("enter filename")
-    f = input("")
-    #f = random.choice(files)
-    img = Image.open('PetImages/tests/' + f).convert('RGB')
-    img_eval_tensor = transforms(img)
-    img_eval_tensor.unsqueeze(0)
-    img_eval_tensor = img_eval_tensor.cuda()
-    #print(img_eval_tensor.shape)
-    data = Variable(img_eval_tensor)
-    out = model(data)
-    print("ergebnis", out)
-    print(out.data.max(1, keepdim = True)[1]) 
-    print("Hund") if((out.data.max(1, keepdim = True)[1])==1) else print("Katze")
-    img.show()
+    f = input("Please enter the filename of the picture you whish to test: ")
     
+    directoryPath = 'PetImages/tests/' + f
 
+
+
+    if os.path.isfile(directoryPath):
+
+        
+        
+        #f = random.choice(files)
+        img = Image.open('PetImages/tests/' + f).convert('RGB')
+        img_eval_tensor = transforms(img)
+        img_eval_tensor.unsqueeze(0)
+        img_eval_tensor = img_eval_tensor.cuda()
+        #print(img_eval_tensor.shape)
+        data = Variable(img_eval_tensor)
+        out = model(data)
+        #print("ergebnis", out)
+        #print(out.data.max(1, keepdim = True)[1]) 
+        print("Tierart: Hund") if((out.data.max(1, keepdim = True)[1])==1) else print("Tierart: Katze")
+        img.show()
+    
+    else:   
+        
+        print("Filename does not exist!")
+        test()
+        
    
 
 
@@ -326,7 +348,13 @@ def test():
 
 while True:
     test()
+    print("Do you want to continue? If yes, please state with YES:")
+    if input("") == "YES":
+        True
+    else:
+        break
 
+    
 
 
     

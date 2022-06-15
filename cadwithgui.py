@@ -245,9 +245,11 @@ for epoch in range(1, 2):
         #print(len(files))
     torch.save(model, 'meinNetz2.pt')
     test_error = testModelWithTestData()
-    #print("test_error")
+    print("")
+    print("test_error")
     print(test_error)
-    #print("totatl_train_error")
+    print("")
+    print("totatl_train_error")
     print(total_train_error/10000)
     arr.append((total_train_error/10000).item())
     arr2.append(test_error.item())
@@ -270,7 +272,7 @@ root = tk.Tk()
 
 header_label = tk.Label(root, text = "FEHLERQUOTE:")
 header_label.grid(row = 1, column = 1)
-
+root.geometry("500x200")
 
 newrow = 5
 newcolumn = 1

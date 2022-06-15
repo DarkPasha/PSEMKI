@@ -38,8 +38,8 @@ train_data_list = []
 target_list = []
 train_data = []
 waited = False
-files = listdir('catdog/train/')
-for i in range(len(listdir('catdog/train/'))):
+files = listdir('C:/Users/meame/Desktop/PetImages/training_data/')
+for i in range(len(listdir('C:/Users/meame/Desktop/PetImages/training_data/'))):
 
     # zugreifen in den ordner mit den Bildern --> random pick (f)
 
@@ -48,7 +48,7 @@ for i in range(len(listdir('catdog/train/'))):
         continue
     f = random.choice(files)
     files.remove(f)
-    img = Image.open("catdog/train/" + f)
+    img = Image.open("C:/Users/meame/Desktop/PetImages/training_data/" + f)
     img_tensor = transforms(img)#(3,256,256)
     train_data_list.append(img_tensor)
     isCat = 1 if 'cat' in f else 0
@@ -59,8 +59,8 @@ for i in range(len(listdir('catdog/train/'))):
         train_data.append((torch.stack(train_data_list), target_list))
         train_data_list = []
         target_list = []
-        print('Loaded batch ', len(train_data), 'of ', int(len(listdir('catdog/train/'))/64))
-        print('Percentage Done: ', 100*len(train_data)/int(len(listdir('catdog/train/'))/64), '%')
+        print('Loaded batch ', len(train_data), 'of ', int(len(listdir('C:/Users/meame/Desktop/PetImages/training_data/'))/64))
+        print('Percentage Done: ', 100*len(train_data)/int(len(listdir('C:/Users/meame/Desktop/PetImages/training_data/'))/64), '%')
         if len(train_data) > 150:
             break
 
@@ -135,9 +135,9 @@ def train(epoch):
 # wir nehmen ein random bild --> bringen es in das richte Format --> laden es auf die Grafikkarte --> lassen die KI arbeiten --> zeigt das Bild und ob es ein Hund oder eine Katze ist
 def test():
     model.eval()
-    files = listdir('catdog/test/')
+    files = listdir('C:/Users/meame/Desktop/PetImages/test_data/')
     f = random.choice(files)
-    img = Image.open('catdog/test/' + f)
+    img = Image.open('C:/Users/meame/Desktop/PetImages/test_data/' + f)
     img_eval_tensor = transforms(img)
     img_eval_tensor.unsqueeze_(0)
     data = Variable(img_eval_tensor.cuda())

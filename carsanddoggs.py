@@ -62,7 +62,7 @@ def readBatchsize(batch_size, files):
         files.remove(f)
         #print(f)
         #print(i)
-        img = Image.open("PetImages/training_data/" + f) 
+        img = Image.open("C:/Users/meame/Desktop/PetImages/training_data/" + f) 
         img_tensor = transforms(img)
         #das random Bild wird hier auf die Werte skaliert und bearbeitet, die wir oben festgelegt haben (Tensormanipulation)
 
@@ -89,12 +89,12 @@ def readBatchsize(batch_size, files):
 # dieses bild wird geöffnet und transformiert (genau wie oben)
 
 # load test data
-testFiles = os.listdir("PetImages/test_data/")
+testFiles = os.listdir("C:/Users/meame/Desktop/PetImages/test_data/")
 #print("testFiles", files)
 for i in range(100):
     f = random.choice(testFiles)
     testFiles.remove(f)
-    img = Image.open("PetImages/test_data/" + f) 
+    img = Image.open("C:/Users/meame/Desktop/PetImages/test_data/" + f) 
     img_tensor = transforms(img)
     test_data_list.append(img_tensor)
     isCat = 1 if "cat" in f else 0
@@ -217,7 +217,7 @@ arr2 = []
 for epoch in range(1, 10):
     print("epoch", epoch)
     i = 0
-    files = os.listdir("PetImages/training_data/")
+    files = os.listdir("C:/Users/meame/Desktop/PetImages/training_data/")
     total_train_error= 0.0
     for batchNumber in range(1, 200):
         train_data = readBatchsize(50, files)
@@ -257,11 +257,11 @@ plt.show()
 
 def test():
     model.eval()
-    files = os.listdir('PetImages/tests/')
+    files = os.listdir('C:/Users/meame/Desktop/PetImages/tests/')
     print("enter filename")
     f = input("")
     #f = random.choice(files)
-    img = Image.open('PetImages/tests/' + f).convert('RGB')
+    img = Image.open('C:/Users/meame/Desktop/PetImages/tests/' + f).convert('RGB')
     img_eval_tensor = transforms(img)
     img_eval_tensor.unsqueeze(0)
     img_eval_tensor = img_eval_tensor.cuda()

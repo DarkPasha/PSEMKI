@@ -297,7 +297,6 @@ plt.savefig('Error_Rate_AI_3.png')
 plt.show()
 
 #Testklasse der KI / Ausführung der KI
-
 def test():
     model.eval()
     files = os.listdir('PetImages/tests/')

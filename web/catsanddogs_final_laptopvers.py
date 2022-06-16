@@ -21,6 +21,7 @@ from pathlib import Path
 import os.path
 import os
 import time
+from flask import Flask, render_template
 
 #Anpassen der Bilder auf feste Größe
 

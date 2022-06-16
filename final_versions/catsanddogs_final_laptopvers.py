@@ -215,10 +215,17 @@ arr2 = []
 
 
 #Ausführung der KI mit 10 Trainingsepochen
+epochnumber = int(input("With how many epochs do you want to train the AI? (Remember that more Epochs let the AI learn better but also take more time):  "))
+
+
+print("")
+print("")
+
+import errorwindow3k
 print("")
 print("")
 print("////////////////////////////////////////////////////////////////////////////////////////////")
-for epoch in range(1, 10):
+for epoch in range(1, epochnumber):
     print("Now training with Epoch", epoch,"!")
     print("")
     i = 0

@@ -6,20 +6,24 @@ from locale import normalize
 from turtle import forward
 import torch
 import torchvision
-
 from torchvision import transforms
 from PIL import Image
 import os
-
 import random
 import torch.optim as optim
 from torch.autograd import Variable
 import torch.nn.functional as F
 import torch.nn as nn
-
 import matplotlib.pyplot as plt
+import tkinter as tk
+import random
+from pathlib import Path
+import os.path
+import os
+import time
 
 #Anpassen der Bilder auf feste Größe
+
 #Tensoren sind mehrdimensionale Arrays, welche Elemente eines einzigen Datentyps enthalten
 #man kann mit Tensoren daten speichern und manipulieren --> Bilder auf die passende Größe bringen
 normalize = transforms.Normalize(
@@ -43,6 +47,18 @@ test_data=[]
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 #Zufallsreinfolge für die Bilder, damit die KI keine Muster darin erkennt 
 #Außerdem Bearbeitungder Bilder, damit die KI ein neuronales Netz entwickeln kann
 #print(files)
@@ -62,7 +78,7 @@ def readBatchsize(batch_size, files):
         files.remove(f)
         #print(f)
         #print(i)
-        img = Image.open("/PetImages/training_data/" + f) 
+        img = Image.open("PetImages/training_data/" + f) 
         img_tensor = transforms(img)
         #das random Bild wird hier auf die Werte skaliert und bearbeitet, die wir oben festgelegt haben (Tensormanipulation)
 
@@ -147,7 +163,7 @@ class Netz(nn.Module):
         return torch.sigmoid(x)
 
 model = Netz()
-model.cuda()
+model
 
 #Optimierung des Netzes der KI
 
@@ -168,8 +184,8 @@ def train(epoch, train_data):
     running_train_error= 0.0
     for data, target in train_data:
         #print("training")
-        data = data.cuda()
-        target = torch.Tensor(target).cuda()
+        data = data
+        target = torch.Tensor(target)
         data = Variable(data)
         target = Variable(target)
         optimizer.zero_grad()
@@ -195,8 +211,8 @@ def testModelWithTestData():
     #print(test_data)
     running_train_error= 0.0
     for data, target in test_data:
-        data = data.cuda()
-        target = torch.Tensor(target).cuda()
+        data = data
+        target = torch.Tensor(target)
         data = Variable(data)
         target = Variable(target)
         out = model(data)
@@ -213,9 +229,12 @@ arr2 = []
 
 
 #Ausführung der KI mit 30 Trainingsepochen
-
+print("")
+print("")
+print("////////////////////////////////////////////////////////////////////////////////////////////")
 for epoch in range(1, 10):
-    print("epoch", epoch)
+    print("Now training with Epoch", epoch,"!")
+    print("")
     i = 0
     files = os.listdir("PetImages/training_data/")
     total_train_error= 0.0
@@ -226,16 +245,47 @@ for epoch in range(1, 10):
         #print(len(files))
     torch.save(model, 'meinNetz2.pt')
     test_error = testModelWithTestData()
+    print("")
     print("test_error")
     print(test_error)
+    print("")
     print("totatl_train_error")
     print(total_train_error/10000)
     arr.append((total_train_error/10000).item())
     arr2.append(test_error.item())
-    #print(arr)
+    print("Total Errorquote ---->", arr)
+    
+    print("")
+    print("Finished training with Epoch", epoch, "!")
+    print("////////////////////////////////////////////////////////////////////////////////////////////")
+    
+    #Absätze
+    print("")
+    print("")
+    time.sleep(3)
+
+     ### hier kommt die gui rein
+    
+
+root = tk.Tk()
+
+header_label = tk.Label(root, text = "FEHLERQUOTE:")
+header_label.grid(row = 1, column = 1)
+root.geometry("500x200")
+
+newrow = 5
+newcolumn = 1
+
+for number in arr:  
+    entry_label = tk.Label(root, text = number)
+    entry_label.grid(row = newrow, column = newcolumn)
+    newrow = newrow +1
+    
+root.mainloop() 
 
 
 #plot Graph
+
 #die Fehlerquote, die abgefangen wurde wird hier als ein Graph ausgegeben, wodurch man die Effizienz optisch erkennen kann
 x1 = range(1,len(arr)+1)
 y1 = arr
@@ -257,22 +307,40 @@ plt.show()
 
 def test():
     model.eval()
-    files = os.listdir('CPetImages/tests/')
-    print("enter filename")
-    f = input("")
-    #f = random.choice(files)
-    img = Image.open('PetImages/tests/' + f).convert('RGB')
-    img_eval_tensor = transforms(img)
-    img_eval_tensor.unsqueeze(0)
-    img_eval_tensor = img_eval_tensor.cuda()
-    #print(img_eval_tensor.shape)
-    data = Variable(img_eval_tensor)
-    out = model(data)
-    print("ergebnis", out)
-    print(out.data.max(1, keepdim = True)[1]) 
-    print("Hund") if((out.data.max(1, keepdim = True)[1])==1) else print("Katze")
-    img.show()
-    #x = input("")
+    files = os.listdir('PetImages/tests/')
+    f = input("Please enter the filename of the picture you whish to test: ")
+    
+    directoryPath = 'PetImages/tests/' + f
+
+
+
+    if os.path.isfile(directoryPath):      
+        #f = random.choice(files)
+        img = Image.open('PetImages/tests/' + f).convert('RGB')
+        img_eval_tensor = transforms(img)
+        img_eval_tensor.unsqueeze(0)
+        img_eval_tensor = img_eval_tensor
+        #print(img_eval_tensor.shape)
+        data = Variable(img_eval_tensor)
+        out = model(data)
+        #print("ergebnis", out)
+        #print(out.data.max(1, keepdim = True)[1]) 
+        print("Tierart: Hund") if((out.data.max(1, keepdim = True)[1])==1) else print("Tierart: Katze")
+        img.show()
+    
+    else:          
+        print("Filename does not exist!")
+        test()
 
 while True:
     test()
+    print("Do you want to continue? If yes, please state with YES:")
+    if input("") == "YES":
+        True
+    else:
+        break
+
+    
+
+
+    

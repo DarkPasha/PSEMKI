@@ -1,5 +1,4 @@
 
-
 from locale import normalize
 from turtle import forward
 import torch
@@ -15,7 +14,6 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 import torch.nn as nn
 
-
 normalize = transforms.Normalize(
     mean = [0.485, 0.456, 0.406],
     std=[0.229, 0.224, 0.225]
@@ -26,9 +24,8 @@ transforms = transforms.Compose([
         transforms.ToTensor(),
         normalize])
 
-
 def test():
-    model = model.load_state_dict(torch.load('meinNetz.pt'))
+    model = model.load_state_dict(torch.load('meinNetz2.pt'))
     model.eval()
     files = os.listdir('PetImages/tests/')
     print("enter filename")

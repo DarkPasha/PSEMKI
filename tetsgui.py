@@ -17,19 +17,12 @@ import tkinter as tk
 #headerlabel = tk.Label(interface, text = "FEHLERQUOTE: ")
 #headerlabel.grid(row = 1, column = 1)
 
-
 #interface.mainloop()
-
-
-
-
 
 root = tk.Tk()
 
-
 header_label = tk.Label(root, text = "FEHLERQUOTE:")
 header_label.grid(row = 1, column = 1)
-
 
 header_label = tk.Label(root, text = "FEHLERQUOTE:")
 header_label.grid(row = 1, column = 1)

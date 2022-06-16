@@ -214,11 +214,11 @@ arr = []
 arr2 = []
 
 
-#Ausführung der KI mit 30 Trainingsepochen
+#Ausführung der KI mit 10 Trainingsepochen
 print("")
 print("")
 print("////////////////////////////////////////////////////////////////////////////////////////////")
-for epoch in range(1, 30):
+for epoch in range(1, 10):
     print("Now training with Epoch", epoch,"!")
     print("")
     i = 0

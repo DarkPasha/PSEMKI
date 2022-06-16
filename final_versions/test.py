@@ -61,7 +61,7 @@ class Netz(nn.Module):
 
 def test():
     model = Netz()
-    model.load_state_dict(torch.load('meinNetz2.pt'))
+    model = model.load_state_dict(torch.load('meinNetz2.pt'))
     model.eval()
     files = os.listdir('PetImages/tests/')
     f = input("Please enter the filename of the picture you whish to test: ")

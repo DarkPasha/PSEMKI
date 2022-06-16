@@ -21,7 +21,6 @@ from pathlib import Path
 import os.path
 import os
 import time
-from flask import Flask, render_template
 
 #Anpassen der Bilder auf feste Größe
 
@@ -45,6 +44,7 @@ transforms = transforms.Compose([
 test_data_list=[]
 test_target_list = []
 test_data=[]
+
 
 
 #Zufallsreinfolge für die Bilder, damit die KI keine Muster darin erkennt 
@@ -151,9 +151,10 @@ class Netz(nn.Module):
         return torch.sigmoid(x)
 
 model = Netz()
-model
+model.cuda()
 
 #Optimierung des Netzes der KI
+
 def error_criterion(out,target):
     #print(out)
     out_max_vals, out_max_indices = torch.max(out,1)
@@ -171,8 +172,8 @@ def train(epoch, train_data):
     running_train_error= 0.0
     for data, target in train_data:
         #print("training")
-        data = data
-        target = torch.Tensor(target)
+        data = data.cuda()
+        target = torch.Tensor(target).cuda()
         data = Variable(data)
         target = Variable(target)
         optimizer.zero_grad()
@@ -198,8 +199,8 @@ def testModelWithTestData():
     #print(test_data)
     running_train_error= 0.0
     for data, target in test_data:
-        data = data
-        target = torch.Tensor(target)
+        data = data.cuda()
+        target = torch.Tensor(target).cuda()
         data = Variable(data)
         target = Variable(target)
         out = model(data)
@@ -215,7 +216,7 @@ arr = []
 arr2 = []
 
 
-#Ausführung der KI mit 10 Trainingsepochen
+#Ausführung der KI mit 30 Trainingsepochen
 print("")
 print("")
 print("////////////////////////////////////////////////////////////////////////////////////////////")
@@ -254,6 +255,7 @@ for epoch in range(1, 10):
      ### hier kommt die gui rein
     
 
+
 root = tk.Tk()
 
 header_label = tk.Label(root, text = "FEHLERQUOTE:")
@@ -263,11 +265,17 @@ root.geometry("500x200")
 newrow = 5
 newcolumn = 1
 
-for number in arr:  
+for number in arr:
+
+    
+    
     entry_label = tk.Label(root, text = number)
     entry_label.grid(row = newrow, column = newcolumn)
     newrow = newrow +1
     
+   
+
+
 root.mainloop() 
 
 
@@ -291,6 +299,7 @@ plt.savefig('Error_Rate_AI_3.png')
 plt.show()
 
 #Testklasse der KI / Ausführung der KI
+
 def test():
     model.eval()
     files = os.listdir('PetImages/tests/')
@@ -298,12 +307,17 @@ def test():
     
     directoryPath = 'PetImages/tests/' + f
 
-    if os.path.isfile(directoryPath):      
+
+
+    if os.path.isfile(directoryPath):
+
+        
+        
         #f = random.choice(files)
         img = Image.open('PetImages/tests/' + f).convert('RGB')
         img_eval_tensor = transforms(img)
         img_eval_tensor.unsqueeze(0)
-        img_eval_tensor = img_eval_tensor
+        img_eval_tensor = img_eval_tensor.cuda()
         #print(img_eval_tensor.shape)
         data = Variable(img_eval_tensor)
         out = model(data)
@@ -312,9 +326,15 @@ def test():
         print("Tierart: Hund") if((out.data.max(1, keepdim = True)[1])==1) else print("Tierart: Katze")
         img.show()
     
-    else:          
+    else:   
+        
         print("Filename does not exist!")
         test()
+        
+   
+
+
+
 
 while True:
     test()

@@ -47,18 +47,6 @@ test_data=[]
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 #Zufallsreinfolge für die Bilder, damit die KI keine Muster darin erkennt 
 #Außerdem Bearbeitungder Bilder, damit die KI ein neuronales Netz entwickeln kann
 #print(files)

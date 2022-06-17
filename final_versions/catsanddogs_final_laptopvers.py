@@ -221,7 +221,7 @@ epochnumber = int(input("With how many epochs do you want to train the AI? (Reme
 print("")
 print("")
 
-import errorwindow3k
+import finalstuff.errorwindow3k as errorwindow3k
 print("")
 print("")
 print("////////////////////////////////////////////////////////////////////////////////////////////")

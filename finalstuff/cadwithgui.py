@@ -104,11 +104,17 @@ def readBatchsize(batch_size, files):
 # hier wird ein Training durchgeführt, wobei ein Bild durch die random library gewählt wird und wie oben aus der queue gelöscht wird
 # dieses bild wird geöffnet und transformiert (genau wie oben)
 
+
+
+    
+        
+    
 # load test data
 testFiles = os.listdir("PetImages/test_data/")
 #print("testFiles", files)
 for i in range(100):
     f = random.choice(testFiles)
+    
     testFiles.remove(f)
     img = Image.open("PetImages/test_data/" + f) 
     img_tensor = transforms(img)
@@ -121,8 +127,9 @@ for i in range(100):
 #Trainingsepochen:
 test_data.append((torch.stack(test_data_list), test_target_list))
 test_data_list = []
-    
 
+    
+    
 
 
 #print(train_data_list)
@@ -231,12 +238,13 @@ arr2 = []
 #Ausführung der KI mit 30 Trainingsepochen
 print("")
 print("")
+epochrange = int(input("With how many epochs would you like to train the AI?   "))
 
 import errorwindow3k
 print("")
 print("")
 print("////////////////////////////////////////////////////////////////////////////////////////////")
-for epoch in range(1, 2):
+for epoch in range(1, epochrange +1):
     print("Now training with Epoch", epoch,"!")
     print("")
     i = 0
@@ -282,10 +290,11 @@ newrow = 5
 newcolumn = 1
 
 for number in arr:
-
+    number = number * 100
+    format_number = "{:.2f}".format(number)
+   
     
-    
-    entry_label = tk.Label(root, text = number)
+    entry_label = tk.Label(root, text = format_number + "%")
     entry_label.grid(row = newrow, column = newcolumn)
     newrow = newrow +1
     

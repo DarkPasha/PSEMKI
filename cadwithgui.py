@@ -72,7 +72,7 @@ def readBatchsize(batch_size, files):
 
         train_data_list.append(img_tensor)
 
-        
+
         isCat = 1 if "cat" in f else 0
         isDog = 1 if "dog" in f else 0
         target = [isCat, isDog]
@@ -269,17 +269,11 @@ root.geometry("500x200")
 newrow = 5
 newcolumn = 1
 
-for number in arr:
-
-    
-    
+for number in arr:   
     entry_label = tk.Label(root, text = number)
     entry_label.grid(row = newrow, column = newcolumn)
     newrow = newrow +1
     
-   
-
-
 root.mainloop() 
 
 

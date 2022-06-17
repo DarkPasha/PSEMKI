@@ -29,7 +29,20 @@
     </div>   
     
 
-    <button type="submit" onclick="PythonAusführen()" id="button"> KI Ausführen </button>
+    <input type="button" id="script" name="scriptbutton" value=" Run Script " onclick="goPython()">
+
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <script>
+        function goPython(){
+            $.ajax({
+              url: "catsanddogs_final_laptopvers.py",
+             context: document.body
+            }).done(function() {
+             alert('finished python script');;
+            });
+        }
+    </script>
 
 
     <div class="box">
@@ -43,7 +56,7 @@
         </ul>
     </div>
    
-    </body>
+
 
 
 </body>

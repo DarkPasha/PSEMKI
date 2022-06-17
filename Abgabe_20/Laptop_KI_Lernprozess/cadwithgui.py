@@ -1,5 +1,5 @@
 #Package Import
-#Authors: Emirhan, Daniel
+#Authors: Emirhan, Daniel, Kartik
 #Final version
 
 from locale import normalize

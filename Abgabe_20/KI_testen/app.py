@@ -65,7 +65,7 @@ def ausführen():
     #os.startfile(os.path.abspath(file))
     model = Netz()
     #model = model.load_state_dict(torch.load('meinNetz2.pt'))
-    model = torch.load('KI_Programm\\NetzTest.pt')
+    model = torch.load('Abgabe_20\KI_testen\NetzTest.pt')
     model.eval()
     f = filename    
     directoryPath = filename
